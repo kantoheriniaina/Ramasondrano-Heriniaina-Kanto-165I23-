@@ -1,0 +1,19 @@
+# Image de base pour le développement
+FROM mcr.microsoft.com/dotnet/sdk:9.0
+
+# Définir le répertoire de travail
+WORKDIR /src
+
+# Copier le fichier .csproj et restaurer les dépendances
+COPY ["WebApplication1.csproj", "."]
+RUN dotnet restore "./WebApplication1.csproj"
+
+# Copier tout le code source
+COPY . .
+
+# Exposer les ports (conforme à votre configuration précédente)
+EXPOSE 8080
+EXPOSE 8081
+
+# Lancer l'application en mode développement avec rechargement à chaud
+CMD ["dotnet", "watch", "run", "--urls", "http://0.0.0.0:8080"]

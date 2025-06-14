@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres_voiture
+    restart: always
+    environment:
+      POSTGRES_USER: kanto
+      POSTGRES_PASSWORD: kanto2004
+      POSTGRES_DB: voiture_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin_voiture
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: kanto@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: kanto2004
+    ports:
+      - "8080:80"
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+
+volumes:
+  postgres_data:
+
+networks:
+  app-network:
+    driver: bridge

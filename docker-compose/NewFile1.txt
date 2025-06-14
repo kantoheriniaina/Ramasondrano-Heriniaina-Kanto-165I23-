@@ -1,0 +1,38 @@
+  backend:
+    build:
+      context: ../WebApplication1
+      dockerfile: Dockerfile
+    container_name: backend_voiture
+    restart: always
+    ports:
+      - "8081:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=voiture_db;Username=kanto;Password=kanto2004
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+    volumes:
+      - ../WebApplication1:/app  # 👈 Ajout important pour voir les changements
+      - /app/bin
+      - /app/obj
+  
+  
+  frontend:
+    build:
+      context: ../front
+      dockerfile: Dockerfile.dev  # Utilise le Dockerfile de développement
+    container_name: frontend_voiture
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:8080
+    depends_on:
+      - backend
+    volumes:
+      - ../front:/app  # Synchronise le répertoire local avec le conteneur
+      - /app/node_modules  # Préserve node_modules pour éviter des conflits
+    networks:
+      - app-network
